@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI 工具连连看</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="game-shell" aria-labelledby="game-title">
+      <section class="hud" aria-label="游戏信息">
+        <div class="score-box">
+          <span class="hud-icon" aria-hidden="true">🏆</span>
+          <div>
+            <span class="hud-label">得分</span>
+            <strong id="score">0</strong>
+          </div>
+        </div>
+
+        <div class="title-wrap">
+          <h1 id="game-title">
+            <span class="title-ai">AI</span>
+            <span class="title-tool">工具</span>
+            <span class="title-match">连连看</span>
+          </h1>
+          <span id="statusText" class="status-text">先选择棋盘尺寸，再选择时间难度</span>
+          <span id="recordText" class="record-text">最高纪录 0</span>
+        </div>
+
+        <div class="time-box" id="timeBox">
+          <span class="hud-icon" aria-hidden="true">⏰</span>
+          <div>
+            <span class="hud-label">倒计时</span>
+            <strong id="timer">--:--</strong>
+          </div>
+        </div>
+
+        <button class="restart-button" id="restartBtn" type="button">
+          <span aria-hidden="true">↻</span>
+          重新选择
+        </button>
+      </section>
+
+      <section class="play-area">
+        <aside class="helper-bubble" aria-hidden="true">
+          <span id="helperText">先选棋盘，再选时间</span>
+        </aside>
+
+        <section class="board-panel size-4" id="boardPanel" aria-label="AI 工具卡片棋盘">
+          <div class="board board--4" id="board" data-size="4"></div>
+        </section>
+
+        <aside class="side-actions" aria-label="辅助操作">
+          <button class="hint-button" id="hintBtn" type="button">
+            <span aria-hidden="true">💡</span>
+            <span>提示</span>
+            <strong id="hintsLeft">0</strong>
+          </button>
+          <div class="combo-meter" aria-label="当前配置">
+            <span id="modeLabel">未开始</span>
+            <strong id="pairScore">+0</strong>
+          </div>
+        </aside>
+      </section>
+
+      <section class="progress-row" aria-label="游戏进度">
+        <div class="level-pill">
+          <span aria-hidden="true">⭐</span>
+          <span id="difficultyLabel">未开始</span>
+          <strong id="pairsFound">0 / 0</strong>
+        </div>
+        <div class="star-track" aria-hidden="true">
+          <span class="star active">★</span>
+          <div class="track"><span id="progressBar"></span></div>
+          <span class="star">★</span>
+          <span class="star">★</span>
+        </div>
+        <div class="accuracy-pill">
+          <span aria-hidden="true">✨</span>
+          <span>命中率</span>
+          <strong id="accuracy">100%</strong>
+        </div>
+      </section>
+
+      <dialog class="start-modal" id="startModal" aria-labelledby="startTitle">
+        <div class="start-card">
+          <p class="panel-tag">开始游戏</p>
+          <h2 id="startTitle">选择游戏难度</h2>
+          <p class="panel-copy" id="panelCopy">第 1 步：先选择棋盘尺寸。</p>
+
+          <div class="best-record">
+            <span>最高纪录</span>
+            <strong id="bestScoreModal">0</strong>
+          </div>
+
+          <div class="step-indicator">
+            <span class="step-pill is-active" id="sizeStepPill">1. 棋盘尺寸</span>
+            <span class="step-pill" id="timeStepPill">2. 时间难度</span>
+          </div>
+
+          <div class="selection-grid" id="sizeGrid">
+            <button class="selection-card" type="button" data-size="4">
+              <span class="selection-name">4 × 4</span>
+              <strong>16 格</strong>
+              <small>8 对 AI 工具卡</small>
+            </button>
+            <button class="selection-card" type="button" data-size="7">
+              <span class="selection-name">7 × 7</span>
+              <strong>49 格</strong>
+              <small>24 对 AI 工具卡 + 中心核心位</small>
+            </button>
+            <button class="selection-card" type="button" data-size="9">
+              <span class="selection-name">9 × 9</span>
+              <strong>81 格</strong>
+              <small>40 对 AI 工具卡 + 中心核心位</small>
+            </button>
+          </div>
+
+          <div class="selection-grid selection-grid--times is-hidden" id="timeGrid">
+            <button class="selection-card selection-card--time" type="button" data-time-mode="easy">
+              <span class="selection-name">简单</span>
+              <strong id="timeEasy">90 秒</strong>
+              <small id="scoreEasy">每对 +5 分</small>
+            </button>
+            <button class="selection-card selection-card--time" type="button" data-time-mode="normal">
+              <span class="selection-name">普通</span>
+              <strong id="timeNormal">60 秒</strong>
+              <small id="scoreNormal">每对 +10 分</small>
+            </button>
+            <button class="selection-card selection-card--time" type="button" data-time-mode="hard">
+              <span class="selection-name">困难</span>
+              <strong id="timeHard">30 秒</strong>
+              <small id="scoreHard">每对 +15 分</small>
+            </button>
+          </div>
+
+          <p class="difficulty-hint" id="difficultyHint">请选择棋盘尺寸</p>
+
+          <div class="start-actions">
+            <button class="secondary-action" id="backStepBtn" type="button">返回上一步</button>
+            <button class="secondary-action" id="cancelStartBtn" type="button">继续查看</button>
+            <button class="primary-action" id="startGameBtn" type="button" disabled>开始游戏</button>
+          </div>
+        </div>
+      </dialog>
+
+      <dialog class="result-modal" id="resultModal" aria-labelledby="resultTitle">
+        <div class="result-card">
+          <span class="result-icon" id="resultIcon" aria-hidden="true">🎉</span>
+          <h2 id="resultTitle">通关成功</h2>
+          <p id="resultMessage">所有 AI 工具都已完成配对。</p>
+          <div class="result-stats">
+            <span>最终得分 <strong id="finalScore">0</strong></span>
+            <span>剩余时间 <strong id="finalTime">0 秒</strong></span>
+            <span>最高纪录 <strong id="finalBestScore">0</strong></span>
+          </div>
+          <div class="result-actions">
+            <button class="secondary-action" id="changeDifficultyBtn" type="button">换个配置</button>
+            <button class="primary-action" id="modalRestartBtn" type="button">再玩一次</button>
+          </div>
+        </div>
+      </dialog>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
