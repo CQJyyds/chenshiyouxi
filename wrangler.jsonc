@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "chenshiyouxi",
+  "compatibility_date": "2026-06-25",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "测试3"
+  },
+  "compatibility_flags": [
+    "nodejs_compat"
+  ]
+}
